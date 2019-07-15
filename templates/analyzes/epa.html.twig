@@ -1,33 +1,209 @@
 {% extends 'base.html.twig' %}
 {% block title %}Hello AdminController!{% endblock %}
 {% block body %}
-   <body>
-        <h1>Server access analysis - EPA</h1>
+    <body>
+    <h1>Server access analysis - EPA</h1>
+    <form action="upload" method="post" enctype="multipart/form-data">
 
-        <div class="block">
-          <h2>HTTP Methods</h2>
-          <span class="test">11sdsd</span>
+        <input type="hidden" name="token" value="{{ csrf_token('upload') }}"/>
 
-          <canvas id="methodChart" width="400" height="400"></canvas>
-          {{number}}
+        <div>
+            <label>Upload txt file.:</label>
+            <input type="file" name="myfile" size="5000">
+        </div>
 
-        </div>
-        <div class="block">
-          <h2>Requests per Minute</h2>
-          <canvas id="requestsPerMinuteChart" width="400" height="400"></canvas>
-        </div>
-        <div class="block">
-          <h2>Response Codes</h2>
-          <canvas id="responseCodeChart" width="400" height="400"></canvas>
-        </div>
-        <div class="block">
-          <h2>Answer Size</h2>
-          <canvas id="documentSizeChart" width="400" height="400"></canvas>
-        </div>
-    
-        <!--
-          TODO: Add libraries here
-        -->
+        <button type="submit">Send</button>
 
+    </form>
+    <p id="demo"></p>
+
+
+    <div class="block">
+        <h2>HTTP Methods</h2>
+        <canvas id="methodChart" width="400" height="400"></canvas>
+    </div>
+    <div class="block">
+        <h2>Requests per Minute</h2>
+        <canvas id="requestsPerMinuteChart" width="400" height="400"></canvas>
+    </div>
+    <div class="block">
+        <h2>Response Codes, Total:{{ code200 + code404 + code302 }}</h2>
+        <canvas id="responseCodeChart" width="400" height="400"></canvas>
+        </canvas>
+    </div>
+    <div class="block">
+        <h2>Answer Size</h2>
+        <canvas id="documentSizeChart" width="400" height="400"></canvas>
+    </div>
     </body>
-    {% endblock %}
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        var data = JSON.parse('{{ methods|raw }}');
+
+        var ctx = document.getElementById('methodChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            // The type of chart we want to create
+            type: 'bar',
+
+            // The data for our dataset
+            data: {
+                labels: Object.keys(data.methods),
+                datasets: [{
+                    backgroundColor: [
+                        'rgba(104,0,255,0.75)',
+                        'rgba(54, 162, 235, 0.75)',
+                        'rgba(255, 206, 86, 0.75)'],
+
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    data: [data.methods.HEAD, data.methods.POST, data.methods.GET, data.methods.INVALID]
+                }]
+            },
+
+            // Configuration options go here
+            options: {
+                responsive: false
+            }
+        });
+
+        ///////////////////////////
+        var ctx = document.getElementById('responseCodeChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Code:200', 'Code:404', 'Code302'],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [{{ code200|raw }}, {{ code404|raw }},{{ code302|raw }}],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                    ],
+                    borderWidth: 1,
+                    size: 150
+                }]
+            },
+            options: {
+                responsive: false
+
+            }
+        });
+        ///////////////////////////
+
+        var answer = [];
+        var totalAnswer = [];
+        var byminute = [];
+        var sum = 0;
+        $.getJSON('uploads/t1.json', function (data) {
+            $(data).each(function (idx, obj) {
+                $(obj).each(function (key, value) {
+                    for (i = 0; i<=0; i++) {
+                        sum = i++;
+                    }
+                    sum ;
+                    if (value.documnt_size < 1000 || value.response_code == 200) {
+                        answer++
+                    }
+                   totalAnswer ++ ;
+                    byminute = value.datetime['minutes'];
+                });
+
+            });
+
+
+
+            var otheranswer = totalAnswer-answer;
+            var ctx = document.getElementById('documentSizeChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Otheranswer answer', 'An. 200, <1000B',],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [otheranswer, answer],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                        ],
+                        borderWidth: 1,
+                        size: 150
+                    }]
+                },
+                options: {
+                    responsive: false
+
+                }
+            });
+            var ctx = document.getElementById('requestsPerMinuteChart').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Otheranswer answer', 'An. 200, <1000B',],
+                    datasets: [{
+                        label: '# of Votes',
+                        data: [otheranswer, answer],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                        ],
+                        borderWidth: 1,
+                        size: 150
+                    }]
+                },
+                options: {
+                    responsive: false
+
+                }
+            });
+
+        });
+
+        ////
+        var ctx = document.getElementById('documentSizeChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Otheranswer answer', 'An. 200, <1000B',],
+                datasets: [{
+                    label: '# of Votes',
+                    data: [otheranswer, answer],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                    ],
+                    borderWidth: 1,
+                    size: 150
+                }]
+            },
+            options: {
+                responsive: false
+
+            }
+        });
+
+    </script>
+{% endblock %}

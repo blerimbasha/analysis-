@@ -105,6 +105,9 @@
     "nikic/php-parser": {
         "version": "v4.2.2"
     },
+    "nnnick/chartjs": {
+        "version": "v2.8.0"
+    },
     "ocramius/package-versions": {
         "version": "1.4.0"
     },

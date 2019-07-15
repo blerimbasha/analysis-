@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>{% block title %}Welcome!{% endblock %}</title>
     {% block stylesheets %}
-        <meta charset="utf-8"/>
-        <link rel="stylesheet" type="text/css" href= "">
+        <link rel="stylesheet" type="text/css" href="css/main.css">
     {% endblock %}
 </head>
 
@@ -15,9 +14,13 @@
 {% endblock %}
 
 {% block javascripts %}
-
     <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="/index.php"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.9.1/underscore.js"></script>
+
+    {#    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"> </script>#}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <script src="js/epa.js"></script>
 
 {% endblock %}
 </html>

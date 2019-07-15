@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+{% block title %}Hello AdminController!{% endblock %}
+{% block body %}
+    <body>
+    <h1>Server access analysis - EPA</h1>
+
+    <p id="demo"></p>
+
+    {% for content in json_content %}
+        {{ content.request|json_encode }}
+    {% endfor %}
+
+
+    <div class="block">
+        <h2>HTTP Methods</h2>
+        <canvas id="methodChart" width="400" height="400"></canvas>
+
+    </div>
+    <div class="block">
+        <h2>Requests per Minute</h2>
+        <canvas id="requestsPerMinuteChart" width="400" height="400"></canvas>
+    </div>
+    <div class="block">
+        <h2>Response Codes</h2>
+        <canvas id="responseCodeChart" width="400" height="400"></canvas>
+    </div>
+    <div class="block">
+        <h2>Answer Size</h2>
+        <canvas id="documentSizeChart" width="400" height="400"></canvas>
+    </div>
+    <div class="block">
+        <h2>Chart</h2>
+        <canvas id="myChart" width="400" height="400">
+
+        </canvas>
+    </div>
+
+
+    <!--
+      TODO: Add libraries here
+    -->
+
+    </body>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+
+    <script>
+        {#var data = '{{ json_content|raw }}';#}
+
+
+        // var ctx = document.getElementById('myChart').getContext('2d');
+        // var chart = new Chart(ctx, {
+        //     // The type of chart we want to create
+        //     type: 'bar',
+        //
+        //     // The data for our dataset
+        //     data: {
+        //         labels: Object.keys(data.methods),
+        //         datasets: [{
+        //             label: 'My First dataset',
+        //             backgroundColor: 'rgb(41,150,255)',
+        //             borderColor: 'rgb(255,26,23)',
+        //             data: [data.methods.HEAD, data.methods.POST, data.methods.GET, data.methods.INVALID ]
+        //         }]
+        //     },
+        //
+        //     // Configuration options go here
+        //     options: {}
+        // });
+
+    </script>
+{% endblock %}

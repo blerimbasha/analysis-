@@ -1,5 +1,5 @@
 jQuery(document).ready(function() {
-  var epaDataRecords = JSON.parse(window.epadata);
+  // var ctx = document.getElementById('myChart').getContext('2d');
 
-  // TODO: implementation
+
 });
